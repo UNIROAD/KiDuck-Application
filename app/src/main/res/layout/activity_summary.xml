@@ -97,7 +97,7 @@
         app:layout_constraintStart_toStartOf="@+id/summaryTitle" />
 
     <TextView
-        android:id="@+id/staticsTitle"
+        android:id="@+id/deviceStaticsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -117,44 +117,157 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/staticsTitle">
+        app:layout_constraintTop_toBottomOf="@+id/deviceStaticsTitle">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chartWalk"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp">
+                android:layout_height="match_parent">
 
-            </com.github.mikephil.charting.charts.BarChart>
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chartCommunication"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chartDrink">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chartDrink"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp">
+                </com.github.mikephil.charting.charts.BarChart>
 
-            </com.github.mikephil.charting.charts.BarChart>
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chartWalk"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chartCommunication"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp">
+                </com.github.mikephil.charting.charts.BarChart>
 
-            </com.github.mikephil.charting.charts.BarChart>
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chartDrink"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chartWalk">
+
+                </com.github.mikephil.charting.charts.BarChart>
+
+                <TextView
+                    android:id="@+id/walkTitleBackground"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/chart_title_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/drinkTitleBackground"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/chart_title_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chartWalk" />
+
+                <TextView
+                    android:id="@+id/walkTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="걸음수"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toTopOf="@+id/chartWalk"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/communicationTitleBackground"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/chart_title_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chartDrink" />
+
+                <TextView
+                    android:id="@+id/drinkTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="음수량"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/font_omnigothic"
+                    app:layout_constraintBottom_toTopOf="@+id/chartDrink"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/communicationTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="통신 횟수"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/font_omnigothic"
+                    app:layout_constraintBottom_toTopOf="@+id/chartCommunication"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </ScrollView>
+
+    <ImageButton
+        android:id="@+id/settingButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_settings_24" />
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_chevron_left_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

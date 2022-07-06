@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.uniroad.kiduck.databinding.ActivitySummaryBinding
+import org.jetbrains.anko.startActivity
 
 class SummaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySummaryBinding
@@ -139,6 +140,7 @@ class SummaryActivity : AppCompatActivity() {
             setPinchZoom(false) // 핀치줌(두손가락으로 줌인 줌 아웃하는것) 설정
             setDrawBarShadow(false) //그래프의 그림자
             setDrawGridBackground(false)//격자구조 넣을건지
+            background = getDrawable(R.drawable.chart_body_background)
             axisLeft.run { //왼쪽 축. 즉 Y방향 축을 뜻한다.
                 axisMaximum = 10001f //10000 위치에 선을 그리기 위해 10001f로 맥시멈값 설정
                 axisMinimum = 0f // 최소값 0
@@ -161,7 +163,7 @@ class SummaryActivity : AppCompatActivity() {
                 valueFormatter = MyXAxisFormatter() // X축 라벨값(밑에 표시되는 글자) 바꿔주기 위해 설정
             }
             axisRight.isEnabled = false // 오른쪽 Y축을 안보이게 해줌.
-            setTouchEnabled(false) // 그래프 터치해도 아무 변화없게 막음
+            setTouchEnabled(true) // 그래프 터치해도 아무 변화없게 막음
             animateY(1000) // 밑에서부터 올라오는 애니매이션 적용
             legend.isEnabled = false //차트 범례 설정
         }
@@ -179,6 +181,9 @@ class SummaryActivity : AppCompatActivity() {
             invalidate()
         }
 
+        binding.chartWalk.setOnClickListener {
+            startActivity<StaticsActivity>()
+        }
 
     }
 

@@ -21,16 +21,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KiDuck">
         <activity
-            android:name="com.uniroad.kiduck.SummaryActivity"
+            android:name=".StaticsActivity"
             android:exported="false" />
         <activity
-            android:name="com.uniroad.kiduck.ConnectKiduckActivity"
+            android:name=".SummaryActivity"
             android:exported="false" />
         <activity
-            android:name="com.uniroad.kiduck.DeviceInfoActivity"
+            android:name=".ConnectKiduckActivity"
             android:exported="false" />
         <activity
-            android:name="com.uniroad.kiduck.MainActivity"
+            android:name=".DeviceInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
