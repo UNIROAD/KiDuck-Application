@@ -1,8 +1,8 @@
-package com.example.kiduck
+package com.uniroad.kiduck
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.kiduck.databinding.ActivityConnectKiduckBinding
+import com.uniroad.kiduck.databinding.ActivityConnectKiduckBinding
 
 class ConnectKiduckActivity : AppCompatActivity() {
     private lateinit var binding: ActivityConnectKiduckBinding

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.kiduck">
+    package="com.uniroad.kiduck">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
@@ -18,13 +21,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KiDuck">
         <activity
-            android:name=".ConnectKiduckActivity"
+            android:name="com.uniroad.kiduck.SummaryActivity"
             android:exported="false" />
         <activity
-            android:name=".DeviceInfoActivity"
+            android:name="com.uniroad.kiduck.ConnectKiduckActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.uniroad.kiduck.DeviceInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.uniroad.kiduck.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,8 +1,8 @@
-package com.example.kiduck
+package com.uniroad.kiduck
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.kiduck.databinding.ActivityDeviceInfoBinding
+import com.uniroad.kiduck.databinding.ActivityDeviceInfoBinding
 
 class DeviceInfoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDeviceInfoBinding

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SummaryActivity">
+
+    <TextView
+        android:id="@+id/titleBackground"
+        android:layout_width="0dp"
+        android:layout_height="280dp"
+        android:background="@drawable/device_list_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/KiDuck"
+        android:layout_width="240dp"
+        android:layout_height="300dp"
+        android:layout_marginStart="-15dp"
+        android:layout_marginBottom="-70dp"
+        app:layout_constraintBottom_toBottomOf="@+id/titleBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/kiduck_hw" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="159dp"
+        android:fontFamily="@font/font_swagger"
+        android:text="UNIROAD의 기기"
+        android:textColor="@color/black"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="@+id/titleBackground"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/summaryTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="110dp"
+        android:fontFamily="@font/font_omnigothic"
+        android:text="요약 내용"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/titleBackground"
+        app:layout_constraintEnd_toEndOf="@+id/titleBackground" />
+
+    <TextView
+        android:id="@+id/walk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="49dp"
+        android:text="총 걸음수 : 20000 보"
+        android:textColor="@color/black"
+        android:fontFamily="@font/font_omnigothic"
+        app:layout_constraintBottom_toBottomOf="@+id/titleBackground"
+        app:layout_constraintStart_toStartOf="@+id/summaryTitle" />
+
+    <TextView
+        android:id="@+id/communication"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="11dp"
+        android:text="타 기기와 통신 :  7 회"
+        android:fontFamily="@font/font_omnigothic"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/titleBackground"
+        app:layout_constraintStart_toStartOf="@+id/summaryTitle" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="68dp"
+        android:text="사용시간 : 100 시간"
+        android:fontFamily="@font/font_omnigothic"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/titleBackground"
+        app:layout_constraintStart_toStartOf="@+id/summaryTitle" />
+
+    <TextView
+        android:id="@+id/drink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:text="총 음수량 : 1402 mL"
+        android:fontFamily="@font/font_omnigothic"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/titleBackground"
+        app:layout_constraintStart_toStartOf="@+id/summaryTitle" />
+
+    <TextView
+        android:id="@+id/staticsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="50dp"
+        android:fontFamily="@font/font_omnigothic"
+        android:text="기기 통계"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleBackground" />
+
+    <ScrollView
+        android:id="@+id/staticsView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/staticsTitle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chartWalk"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp">
+
+            </com.github.mikephil.charting.charts.BarChart>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chartDrink"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp">
+
+            </com.github.mikephil.charting.charts.BarChart>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chartCommunication"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp">
+
+            </com.github.mikephil.charting.charts.BarChart>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

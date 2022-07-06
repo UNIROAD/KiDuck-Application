@@ -1,4 +1,4 @@
-package com.example.kiduck
+package com.uniroad.kiduck
 
 import org.junit.Test
 
