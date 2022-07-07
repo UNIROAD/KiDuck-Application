@@ -21,6 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KiDuck">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".StaticsActivity"
             android:exported="false" />
         <activity

@@ -185,6 +185,12 @@ class SummaryActivity : AppCompatActivity() {
             startActivity<StaticsActivity>()
         }
 
+
+        binding.settingButton.setOnClickListener {
+            startActivity<SettingsActivity>()
+        }
+
+        binding.backButton.setOnClickListener { finish() } // 현재 activity 종료
     }
 
     inner class MyXAxisFormatter : ValueFormatter() {
