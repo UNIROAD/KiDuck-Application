@@ -11,6 +11,6 @@ class StaticsActivity : AppCompatActivity() {
         binding = ActivityStaticsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        binding.finishStatics.setOnClickListener { finish() }
     }
 }

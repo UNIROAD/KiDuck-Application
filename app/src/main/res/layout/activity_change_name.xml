@@ -86,7 +86,6 @@
                 android:fontFamily="@font/font_hunsaemaeul"
                 android:gravity="center"
                 android:inputType="textPersonName"
-                android:text="Name"
                 android:textSize="60sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
