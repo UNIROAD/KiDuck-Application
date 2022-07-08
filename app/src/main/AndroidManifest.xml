@@ -21,6 +21,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KiDuck">
         <activity
+            android:name=".EmergencyAlarmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChangeNameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GrowthSettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity
