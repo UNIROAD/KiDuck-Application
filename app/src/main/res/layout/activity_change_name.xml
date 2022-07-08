@@ -74,6 +74,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/currentName" />
 
+            <EditText
+                android:id="@+id/editTextTextPersonName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edittext_rounded_corner_rect"
+                android:ems="10"
+                android:fontFamily="@font/font_hunsaemaeul"
+                android:gravity="center"
+                android:inputType="textPersonName"
+                android:text="Name"
+                android:textSize="60sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nextNameTitle" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
@@ -81,8 +99,8 @@
         android:id="@+id/setNameButton"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/set_button_background"
         android:fontFamily="@font/font_hunsaemaeul"
