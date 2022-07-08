@@ -28,6 +28,6 @@ class SettingsActivity : AppCompatActivity() {
             startActivity<EmergencyAlarmActivity>()
         }
 
-
+        binding.finishSettingsButton.setOnClickListener { finish() }
     }
 }

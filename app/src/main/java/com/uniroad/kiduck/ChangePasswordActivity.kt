@@ -1,11 +1,16 @@
 package com.uniroad.kiduck
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.uniroad.kiduck.databinding.ActivityChangePasswordBinding
 
 class ChangePasswordActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityChangePasswordBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_change_password)
+        binding = ActivityChangePasswordBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.finishPasswordButton.setOnClickListener { finish() }
     }
 }
