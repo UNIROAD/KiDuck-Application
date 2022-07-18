@@ -15,10 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.uniroad.kiduck.databinding.ActivityMainBinding
 import org.jetbrains.anko.startActivity
 
-
-
-
-
 class MainActivity : AppCompatActivity() {
     private val PERMISSION_RESULT_CODE = 1334
     private lateinit var binding: ActivityMainBinding // activitiy_main.xml의 layout 요소에 접근을 위한 변수
