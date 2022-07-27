@@ -71,226 +71,290 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_chevron_left_24" />
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/staticsScroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="10dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/setStatics"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/staticsBodyBackgound">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barchart"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="wrap_content">
 
-            </com.github.mikephil.charting.charts.BarChart>
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barchart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="100dp"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/dateRangeTitle"
-                android:layout_width="60dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/set_date_title_background"
-                android:fontFamily="@font/font_omnigothic"
-                android:gravity="center|center_vertical"
-                android:text="날짜"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/setStaticsTitle" />
+                </com.github.mikephil.charting.charts.BarChart>
 
-            <TextView
-                android:id="@+id/dateRangeTitle2"
-                android:layout_width="60dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/set_date_title_background"
-                android:fontFamily="@font/font_omnigothic"
-                android:gravity="center|center_vertical"
-                android:text="단위"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dateRangeTextBackground" />
+                <TextView
+                    android:id="@+id/dateRangeTitle"
+                    android:layout_width="60dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/set_date_title_background"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:gravity="center|center_vertical"
+                    android:text="날짜"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/setStaticsTitle" />
 
-            <TextView
-                android:id="@+id/setStaticsTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/font_omnigothic"
-                android:text="통계 설정"
-                android:textColor="@color/black"
-                android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barchart" />
+                <TextView
+                    android:id="@+id/dateRangeTitle2"
+                    android:layout_width="60dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/set_date_title_background"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:gravity="center|center_vertical"
+                    android:text="단위"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dateRangeTextBackground" />
 
-            <TextView
-                android:id="@+id/dateRangeTextBackground"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/set_date_background"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/dateRangeTitle"
-                app:layout_constraintTop_toBottomOf="@+id/setStaticsTitle" />
+                <TextView
+                    android:id="@+id/setStaticsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:text="통계 설정"
+                    android:textColor="@color/black"
+                    android:textSize="30sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/barchart" />
 
-            <TextView
-                android:id="@+id/dateRangeTextBackground2"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/set_date_background"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/dateRangeTitle2"
-                app:layout_constraintTop_toBottomOf="@+id/dateRangeTextBackground" />
+                <TextView
+                    android:id="@+id/dateRangeTextBackground"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/set_date_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/dateRangeTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/setStaticsTitle" />
 
-            <TextView
-                android:id="@+id/setDateRangeButtonBackground"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/set_date_button_background"
-                app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground"
-                app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground" />
+                <TextView
+                    android:id="@+id/dateRangeTextBackground2"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/set_date_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/dateRangeTitle2"
+                    app:layout_constraintTop_toBottomOf="@+id/dateRangeTextBackground" />
 
-            <ImageButton
-                android:id="@+id/setDateRangeButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@android:color/transparent"
-                android:scaleType="center"
-                android:tint="@color/black"
-                app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground"
-                app:layout_constraintTop_toTopOf="@+id/setDateRangeButtonBackground"
-                app:srcCompat="@drawable/ic_baseline_date_range_24" />
+                <TextView
+                    android:id="@+id/setDateRangeButtonBackground"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/set_date_button_background"
+                    app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground"
+                    app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground" />
 
-            <TextView
-                android:id="@+id/dateRangeText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:background="@drawable/edittext_rounded_corner_rect"
-                android:fontFamily="@font/font_omnigothic"
-                android:gravity="center"
-                android:text="대충 날짜 기간"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/dateRangeTextBackground"
-                app:layout_constraintEnd_toStartOf="@+id/setDateRangeButtonBackground"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/dateRangeTitle"
-                app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground" />
+                <ImageButton
+                    android:id="@+id/setDateRangeButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="center"
+                    android:tint="@color/black"
+                    app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground"
+                    app:layout_constraintTop_toTopOf="@+id/setDateRangeButtonBackground"
+                    app:srcCompat="@drawable/ic_baseline_date_range_24" />
 
-            <EditText
-                android:id="@+id/xAxisText"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/edittext_rounded_corner_rect"
-                android:ems="10"
-                android:gravity="right|center_vertical"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toStartOf="@+id/xAxisUnit"
-                app:layout_constraintStart_toEndOf="@+id/xAxisTitle"
-                app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground2" />
+                <TextView
+                    android:id="@+id/dateRangeText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/edittext_rounded_corner_rect"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:gravity="center"
+                    android:text="대충 날짜 기간"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/dateRangeTextBackground"
+                    app:layout_constraintEnd_toStartOf="@+id/setDateRangeButtonBackground"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/dateRangeTitle"
+                    app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground" />
 
-            <EditText
-                android:id="@+id/yAxisText"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/edittext_rounded_corner_rect"
-                android:ems="10"
-                android:gravity="right|center_vertical"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toStartOf="@+id/yAxisUnit"
-                app:layout_constraintStart_toEndOf="@+id/yAxisTitle"
-                app:layout_constraintTop_toBottomOf="@+id/view8" />
+                <EditText
+                    android:id="@+id/xAxisText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/edittext_rounded_corner_rect"
+                    android:ems="10"
+                    android:gravity="right|center_vertical"
+                    android:inputType="textPersonName"
+                    app:layout_constraintEnd_toStartOf="@+id/xAxisUnit"
+                    app:layout_constraintStart_toEndOf="@+id/xAxisTitle"
+                    app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground2" />
 
-            <TextView
-                android:id="@+id/xAxisTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:fontFamily="@font/font_omnigothic"
-                android:text="가로축"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="@+id/view8"
-                app:layout_constraintStart_toEndOf="@+id/dateRangeTitle2"
-                app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground2" />
+                <EditText
+                    android:id="@+id/yAxisText"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/edittext_rounded_corner_rect"
+                    android:ems="10"
+                    android:gravity="right|center_vertical"
+                    android:inputType="textPersonName"
+                    app:layout_constraintEnd_toStartOf="@+id/yAxisUnit"
+                    app:layout_constraintStart_toEndOf="@+id/yAxisTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/view8" />
 
-            <TextView
-                android:id="@+id/yAxisTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:fontFamily="@font/font_omnigothic"
-                android:text="세로축"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="@+id/dateRangeTextBackground2"
-                app:layout_constraintStart_toEndOf="@+id/dateRangeTitle2"
-                app:layout_constraintTop_toBottomOf="@+id/view8" />
+                <TextView
+                    android:id="@+id/xAxisTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:text="가로축"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@+id/view8"
+                    app:layout_constraintStart_toEndOf="@+id/dateRangeTitle2"
+                    app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground2" />
 
-            <TextView
-                android:id="@+id/yAxisUnit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:fontFamily="@font/font_omnigothic"
-                android:text="걸음"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="@+id/dateRangeTextBackground2"
-                app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground2"
-                app:layout_constraintTop_toBottomOf="@+id/view8"
-                app:layout_constraintVertical_bias="0.484" />
+                <TextView
+                    android:id="@+id/yAxisTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:text="세로축"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@+id/dateRangeTextBackground2"
+                    app:layout_constraintStart_toEndOf="@+id/dateRangeTitle2"
+                    app:layout_constraintTop_toBottomOf="@+id/view8" />
 
-            <TextView
-                android:id="@+id/xAxisUnit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:fontFamily="@font/font_omnigothic"
-                android:text="일"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="@+id/view8"
-                app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground2"
-                app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground2"
-                app:layout_constraintVertical_bias="0.485" />
+                <TextView
+                    android:id="@+id/yAxisUnit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:text="걸음"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@+id/dateRangeTextBackground2"
+                    app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground2"
+                    app:layout_constraintTop_toBottomOf="@+id/view8"
+                    app:layout_constraintVertical_bias="0.484" />
 
-            <View
-                android:id="@+id/view8"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="5dp"
-                android:background="@color/white"
-                app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground2"
-                app:layout_constraintHorizontal_bias="0.96"
-                app:layout_constraintStart_toEndOf="@+id/dateRangeTitle2"
-                app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground2" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/xAxisUnit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:text="일"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@+id/view8"
+                    app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground2"
+                    app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground2"
+                    app:layout_constraintVertical_bias="0.485" />
 
-    </LinearLayout>
+                <View
+                    android:id="@+id/view8"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@color/white"
+                    app:layout_constraintEnd_toEndOf="@+id/dateRangeTextBackground2"
+                    app:layout_constraintHorizontal_bias="0.96"
+                    app:layout_constraintStart_toEndOf="@+id/dateRangeTitle2"
+                    app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground2" />
+
+                <TextView
+                    android:id="@+id/meanBackground"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/mean_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/meanTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:text="1일 평균"
+                    android:textColor="@android:color/darker_gray"
+                    app:layout_constraintBottom_toTopOf="@+id/meanText"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/meanDateRange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:text="2022년 07월 20일~ 07월 27일"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toTopOf="@+id/barchart"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/meanUnit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:text="걸음"
+                    android:textColor="@android:color/darker_gray"
+                    app:layout_constraintBottom_toBottomOf="@+id/meanText"
+                    app:layout_constraintStart_toEndOf="@+id/meanText" />
+
+                <TextView
+                    android:id="@+id/meanText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/font_omnigothic"
+                    android:text="3000"
+                    android:textColor="@color/black"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/meanDateRange"
+                    app:layout_constraintStart_toStartOf="@+id/meanBackground" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

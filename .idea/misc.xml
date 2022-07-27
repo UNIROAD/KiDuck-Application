@@ -12,6 +12,7 @@
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/drawable/horizon.xml" value="0.2109375" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/drawable/ic_baseline_chevron_left_24.xml" value="0.259375" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/drawable/ic_launcher_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/drawable/mean_background.xml" value="0.26979166666666665" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/drawable/set_button_background.xml" value="0.259375" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/drawable/set_date_background.xml" value="0.19322916666666667" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/drawable/set_date_button_background.xml" value="0.19322916666666667" />
@@ -22,14 +23,14 @@
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/font/font_omnigothic.xml" value="0.15989583333333332" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/font/font_swagger.xml" value="0.15989583333333332" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_change_name.xml" value="0.25" />
-        <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_change_password.xml" value="0.2" />
+        <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_change_password.xml" value="0.264" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_connect_kiduck.xml" value="0.264" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_device_info.xml" value="0.12552083333333333" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_emergency_alarm.xml" value="0.25" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_growth_setting.xml" value="0.25" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_settings.xml" value="0.25" />
-        <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_statics.xml" value="0.41184387617765816" />
+        <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_statics.xml" value="0.4" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/layout/activity_summary.xml" value="0.22" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.17447916666666666" />
         <entry key="..\:/Users/dskim/AndroidStudioProjects/KiDuck/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.17447916666666666" />

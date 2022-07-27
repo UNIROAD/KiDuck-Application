@@ -150,7 +150,10 @@ class SummaryActivity : AppCompatActivity() {
 
 
         binding.chartWalk.setOnClickListener {
-            startActivity<StaticsActivity>()
+            startActivity<StaticsActivity>(
+                "type" to "walk",
+                "data" to numOfSteps
+            )
         }
 
 
