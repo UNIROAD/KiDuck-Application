@@ -2,6 +2,7 @@ package com.uniroad.kiduck
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
@@ -12,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -55,6 +57,12 @@ class DividerItemDecoration(
 class RecyclerViewAdapter(private val dataSet: ArrayList<BluetoothDevice>) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
+    var mListener : OnItemClickListener? = null
+
+    interface OnItemClickListener{
+        fun onClick(view: View, position: Int)
+    }
+
     class ViewHolder(val linearLayout: LinearLayout) : RecyclerView.ViewHolder(linearLayout)
 
     // Create new views (invoked by the layout manager)
@@ -73,6 +81,12 @@ class RecyclerViewAdapter(private val dataSet: ArrayList<BluetoothDevice>) :
 
         itemName.text = dataSet[position].name
         itemAddress.text = dataSet[position].address
+
+        if(mListener!=null){
+            viewHolder?.itemView?.setOnClickListener{v->
+                mListener?.onClick(v, position)
+            }
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -89,6 +103,9 @@ class ConnectKiduckActivity : AppCompatActivity() {
     private var devicesArr = ArrayList<BluetoothDevice>()
     private val SCAN_PERIOD = 1000
     private val handler = Handler()
+
+    private var bleGatt: BluetoothGatt? = null
+    private var mContext:Context? = null
 
     private val mLeScanCallback = @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     object: ScanCallback() {
@@ -142,8 +159,15 @@ class ConnectKiduckActivity : AppCompatActivity() {
             adapter = recyclerViewAdapter
             addItemDecoration(DividerItemDecoration(context, R.drawable.line_divider,15,15))
         }
-
         scanDevice(true)
+        mContext = this
+        recyclerViewAdapter.mListener = object : RecyclerViewAdapter.OnItemClickListener{
+            override fun onClick(view: View, position: Int) {
+                scanDevice(false) // scan 중지
+                val device = devicesArr.get(position)
+                bleGatt =  DeviceControlActivity(mContext, bleGatt).connectGatt(device)
+            }
+        }
     }
 
 
