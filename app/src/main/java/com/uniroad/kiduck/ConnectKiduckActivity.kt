@@ -69,7 +69,7 @@ class RecyclerViewAdapter(private val dataSet: ArrayList<BluetoothDevice>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val linearLayout = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recyclerview_item, parent, false) as LinearLayout
+            .inflate(R.layout.ble_scan_item, parent, false) as LinearLayout
 
         return ViewHolder(linearLayout)
     }
