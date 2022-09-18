@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import androidx.annotation.RequiresApi
 import java.util.*
 
 class BluetoothLeService: Service() {
@@ -78,11 +79,12 @@ class BluetoothLeService: Service() {
         }
 
         override fun onCharacteristicRead(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?,
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            byteArray: ByteArray,
             status: Int
         ) {
-            super.onCharacteristicRead(gatt, characteristic, status)
+            super.onCharacteristicRead(gatt, characteristic, byteArray, status)
             when (status) {
                 BluetoothGatt.GATT_SUCCESS -> broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
                 else -> {}
@@ -90,10 +92,11 @@ class BluetoothLeService: Service() {
         }
 
         override fun onCharacteristicChanged(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            byteArray: ByteArray
         ) {
-            super.onCharacteristicChanged(gatt, characteristic)
+            super.onCharacteristicChanged(gatt, characteristic, byteArray)
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
         }
     }
@@ -120,10 +123,9 @@ class BluetoothLeService: Service() {
         sendBroadcast(intent)
     }
 
+    @RequiresApi(33)
     fun writeCharacteristic(characteristic: BluetoothGattCharacteristic, data: String) {
-        characteristic.setValue(data)
-        characteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
-        bluetoothGatt?.writeCharacteristic(characteristic)
+        bluetoothGatt?.writeCharacteristic(characteristic, data.toByteArray(), BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE) //임의로 고침
     }
 
     fun setCharacteristicNotification(characteristic: BluetoothGattCharacteristic, enable: Boolean) {
