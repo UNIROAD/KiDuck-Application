@@ -1,5 +1,10 @@
 package com.uniroad.kiduck
 
+import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattService
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,12 +18,42 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.uniroad.kiduck.databinding.ActivitySummaryBinding
 import org.jetbrains.anko.startActivity
-
+import org.jetbrains.anko.toast
 
 
 class SummaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySummaryBinding
 
+    private var deviceAddress = intent.getStringExtra("address")
+    private var bluetoothService: BluetoothLeService? = null
+    var connected: Boolean = false
+    val gattUpdateReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent?.action
+            when (action) {
+                BluetoothLeService.ACTION_GATT_CONNECTED -> connected = true
+                BluetoothLeService.ACTION_GATT_DISCONNECTED -> {
+                    connected = false
+                    toast("BLE 기기와 연결 끊어짐")
+                }
+                BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED -> {
+                    bluetoothService?.let {
+                        if (it.getSupportedGattServices() == null)
+                            return
+
+                        SelectCharacteristicData(it.getSupportedGattServices()!!)
+                    }
+                }
+                BluetoothLeService.ACTION_DATA_AVAILABLE -> {
+                    val resp: String? = intent.getStringExtra(BluetoothLeService.EXTRA_DATA)
+                }
+            }
+
+        }
+    }
+    private var readCharacteristic: BluetoothGattCharacteristic? = null
+    private var writeCharacteristic: BluetoothGattCharacteristic? = null
+    private var notifyCharacteristic: BluetoothGattCharacteristic? = null
     /*
     키덕으로부터 받아야 하는 데이터
         이름
@@ -49,10 +84,55 @@ class SummaryActivity : AppCompatActivity() {
     private lateinit var kiduckPassword: String
     private lateinit var emergencyAlarm_isEnabled: String
 
+    private fun SelectCharacteristicData(gattServices: List<BluetoothGattService>) {
+        for (gattService in gattServices) {
+            var gattCharacteristics: List<BluetoothGattCharacteristic> = gattService.characteristics
+
+            for (gattCharacteristic in gattCharacteristics) {
+                when (gattCharacteristic.uuid) {
+                    BluetoothLeService.UUID_DATA_WRITE -> writeCharacteristic = gattCharacteristic
+                    BluetoothLeService.UUID_DATA_NOTIFY -> notifyCharacteristic = gattCharacteristic
+                }
+            }
+        }
+    }
+
+    private fun SendData(data: String) {
+        writeCharacteristic?.let {
+            if (it.properties or BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE > 0) {
+                bluetoothService?.writeCharacteristic(it, data)
+            }
+        }
+
+        notifyCharacteristic?.let {
+            if (it.properties or BluetoothGattCharacteristic.PROPERTY_NOTIFY > 0) {
+                bluetoothService?.setCharacteristicNotification(it, true)
+
+            }
+        }
+    }
+
+    private fun ReadData() {
+        readCharacteristic?.let {
+            if (it.properties or BluetoothGattCharacteristic.PROPERTY_READ > 0) {
+
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySummaryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (deviceAddress == null) {
+            toast("장치 MAC 주소 획득 실패")
+            finish()
+        }
+        bluetoothService = BluetoothLeService()
+        bluetoothService?.connect(deviceAddress!!)
+
+
 
         // 블루투스 통신으로 KiDuck 데이터 수신
         kiduckName = "DONGSU"
