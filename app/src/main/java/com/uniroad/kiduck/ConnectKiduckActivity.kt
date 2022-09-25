@@ -3,26 +3,27 @@ package com.uniroad.kiduck
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.uniroad.kiduck.databinding.ActivityConnectKiduckBinding
+import org.jetbrains.anko.startActivity
 
 class DividerItemDecoration(
     context: Context,
@@ -69,7 +70,7 @@ class RecyclerViewAdapter(private val dataSet: ArrayList<BluetoothDevice>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val linearLayout = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recyclerview_item, parent, false) as LinearLayout
+            .inflate(R.layout.ble_scan_item, parent, false) as LinearLayout
 
         return ViewHolder(linearLayout)
     }
@@ -98,17 +99,16 @@ class ConnectKiduckActivity : AppCompatActivity() {
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var recyclerViewAdapter : RecyclerViewAdapter
 
-    private var bluetoothAdapter: BluetoothAdapter? = null
-    private var scanning: Boolean = false
-    private var devicesArr = ArrayList<BluetoothDevice>()
+    private lateinit var bluetoothAdapter: BluetoothAdapter
+    private var mScanning: Boolean = false
+    private var arrayDevice = ArrayList<BluetoothDevice>()
     private val SCAN_PERIOD = 1000
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
 
     private var bleGatt: BluetoothGatt? = null
     private var mContext:Context? = null
 
-    private val mLeScanCallback = @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    object: ScanCallback() {
+    private val scanCallback = object: ScanCallback() {
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
             Log.d("scanCallback", "BLE Scan Failed : " + errorCode)
@@ -118,7 +118,7 @@ class ConnectKiduckActivity : AppCompatActivity() {
             results?.let {
                 // results is not null
                 for(result in it) {
-                    if(!devicesArr.contains(result.device) && result.device.name!=null) devicesArr.add(result.device)
+                    if(!arrayDevice.contains(result.device) && result.device.name!=null) arrayDevice.add(result.device)
                 }
             }
         }
@@ -126,46 +126,55 @@ class ConnectKiduckActivity : AppCompatActivity() {
             super.onScanResult(callbackType, result)
             result?.let {
                 // result is not null
-                if(!devicesArr.contains(it.device) && it.device.name!=null) devicesArr.add(it.device)
+                if(!arrayDevice.contains(it.device) && it.device.name!=null) arrayDevice.add(it.device)
                 recyclerViewAdapter.notifyDataSetChanged()
             }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun scanDevice(state:Boolean) = if(state) {
+    private fun scanLeDevice(state:Boolean) = if(state) {
         handler.postDelayed({
-            scanning = false
-            bluetoothAdapter?.bluetoothLeScanner?.stopScan(mLeScanCallback)
+            mScanning = false
+            bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
         }, SCAN_PERIOD)
-        scanning = true
-        devicesArr.clear()
-        bluetoothAdapter?.bluetoothLeScanner?.startScan(mLeScanCallback)
+        mScanning = true
+        arrayDevice.clear()
+        bluetoothAdapter.bluetoothLeScanner.startScan(scanCallback)
     }
     else {
-        scanning = false
-        bluetoothAdapter?.bluetoothLeScanner?.stopScan(mLeScanCallback)
+        mScanning = false
+        bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("dongsu","before binding")
         binding = ActivityConnectKiduckBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val bluetoothManager = applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothAdapter = bluetoothManager.getAdapter()
         viewManager = LinearLayoutManager(this)
-        recyclerViewAdapter = RecyclerViewAdapter(devicesArr)
+        recyclerViewAdapter = RecyclerViewAdapter(arrayDevice)
         val recyclerView = findViewById<RecyclerView > (R.id.recyclerView).apply {
             layoutManager = viewManager
             adapter = recyclerViewAdapter
             addItemDecoration(DividerItemDecoration(context, R.drawable.line_divider,15,15))
         }
-        scanDevice(true)
+    }
+
+    override fun onResume(){
+        super.onResume()
+
+        scanLeDevice(true)
         mContext = this
         recyclerViewAdapter.mListener = object : RecyclerViewAdapter.OnItemClickListener{
             override fun onClick(view: View, position: Int) {
-                scanDevice(false) // scan 중지
-                val device = devicesArr.get(position)
-                bleGatt =  DeviceControlActivity(mContext, bleGatt).connectGatt(device)
+                scanLeDevice(false) // scan 중지
+                val device = arrayDevice.get(position)
+
+                startActivity<SummaryActivity>(
+                    "address" to device.address
+                )
             }
         }
     }
@@ -176,4 +185,3 @@ class ConnectKiduckActivity : AppCompatActivity() {
 private fun Handler.postDelayed(function: () -> Unit?, scanPeriod: Int) {
 
 }
-
