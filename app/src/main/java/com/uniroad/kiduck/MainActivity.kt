@@ -3,64 +3,26 @@ package com.uniroad.kiduck
 import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.GridLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.uniroad.kiduck.databinding.ActivityMainBinding
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
-
-class PairingListAdapter(private val dataSet: ArrayList<BluetoothDevice>) :
-    RecyclerView.Adapter<PairingListAdapter.ViewHolder>() {
-
-    class ViewHolder(val gridLayout: GridLayout) : RecyclerView.ViewHolder(gridLayout)
-
-    // Create new views (invoked by the layout manager)
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        // Create a new view, which defines the UI of the list item
-        val gridLayout = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.kiduck_pairing_item, viewGroup, false) as GridLayout
-
-        return ViewHolder(gridLayout)
-    }
-
-    // Replace the contents of a view (invoked by the layout manager)
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-        val kiduckName: TextView = viewHolder.gridLayout.findViewById(R.id.KiDuckName)
-        kiduckName.text = dataSet[position].name
-    }
-
-    // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = dataSet.size
-}
 
 class MainActivity : AppCompatActivity() {
     private val PERMISSION_RESULT_CODE = 1334
 
     private lateinit var binding: ActivityMainBinding // activitiy_main.xml의 layout 요소에 접근을 위한 변수
-
-    private lateinit var viewManager: RecyclerView.LayoutManager
-    private lateinit var pairingList: ArrayList<BluetoothDevice>
-    private lateinit var pairingListAdapter: PairingListAdapter
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -100,8 +62,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkPermission()
+    }
 
-        showPairingList()
+    override fun onResume() {
+        super.onResume()
 
         binding.addDevice.setOnClickListener {
             Log.d("dongsu","before start connect activity")
@@ -109,7 +73,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.Kiduck1.setOnClickListener {
-            startActivity<SummaryActivity>()
+            startActivity<SummaryActivity>(
+                "address" to null
+            )
         }
     }
 
@@ -154,16 +120,6 @@ class MainActivity : AppCompatActivity() {
 
         if (arrayPermission.size > 0) {
             ActivityCompat.requestPermissions(this, arrayPermission.toTypedArray(), PERMISSION_RESULT_CODE)
-        }
-    }
-
-    fun showPairingList() {
-        pairingList = ArrayList<BluetoothDevice>(bluetoothAdapter?.bondedDevices)
-        viewManager = GridLayoutManager(this, 2)
-        pairingListAdapter = PairingListAdapter(pairingList)
-        val pairingListView = findViewById<RecyclerView>(R.id.KiDuckPairingList).apply {
-            layoutManager = viewManager
-            adapter = pairingListAdapter
         }
     }
 
