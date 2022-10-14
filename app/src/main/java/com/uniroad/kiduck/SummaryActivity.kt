@@ -9,6 +9,7 @@ import android.os.Looper
 import android.os.Looper.*
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.postDelayed
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -25,7 +26,9 @@ import kotlinx.coroutines.experimental.Delay
 import org.jetbrains.anko.bluetoothManager
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import java.lang.Float.max
 import java.util.*
+import java.util.Collections.max
 import kotlin.collections.ArrayList
 
 
@@ -39,6 +42,7 @@ class SummaryActivity : AppCompatActivity() {
     }
     private lateinit var bluetoothGatt: BluetoothGatt
 
+    private var readKiDuckData = mutableListOf<String>()
     private val TAG = "BLE_GATT"
     private val gattClientCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
@@ -77,7 +81,7 @@ class SummaryActivity : AppCompatActivity() {
             characteristic: BluetoothGattCharacteristic
         ) {
             super.onCharacteristicChanged(gatt, characteristic)
-            Log.d(TAG, "characteristic changed: " + characteristic.uuid.toString())
+            //Log.d(TAG, "characteristic changed: " + characteristic.uuid.toString())
             readCharacteristic(characteristic)
         }
 
@@ -120,6 +124,7 @@ class SummaryActivity : AppCompatActivity() {
          */
         private fun readCharacteristic(characteristic: BluetoothGattCharacteristic) {
             val msg = characteristic.getStringValue(0)
+            readKiDuckData.add(msg)
             Log.d(TAG, "read: $msg")
         }
     }
@@ -177,6 +182,7 @@ class SummaryActivity : AppCompatActivity() {
 
         걸음수
         음수량
+
         통신 횟수
 
         성장 조건별 기준
@@ -190,14 +196,22 @@ class SummaryActivity : AppCompatActivity() {
      */
     private lateinit var kiduckName: String
     private lateinit var dataCount: String
-    private lateinit var numOfSteps: ArrayList<String>
-    private lateinit var amountOfDrink: ArrayList<String>
-    private lateinit var numOfCommunication: ArrayList<String>
+    private lateinit var numOfSteps: ArrayList<Float>
+    private lateinit var amountOfDrink: ArrayList<Float>
+    private lateinit var numOfCommunication: ArrayList<Float>
     private lateinit var criteriaOfSteps: String
     private lateinit var criteriaOfDrink: String
     private lateinit var criteriaOfCommunication: String
     private lateinit var kiduckPassword: String
     private lateinit var emergencyAlarm_isEnabled: String
+
+    private var DATA_COUNT = 0
+    private var MAX_STEPS = 0f
+    private var MAX_DRINK = 0f
+    private var MAX_COMMUNICATION = 0f
+    private var SUM_STEPS = 0
+    private var SUM_DRINK = 0
+    private var SUM_COMMUNICATION = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -220,50 +234,130 @@ class SummaryActivity : AppCompatActivity() {
         val loadingDialog = LoadingDialog(this)
         loadingDialog.show()
 
+        var isConnected = false
         Handler(Looper.getMainLooper()).postDelayed({
             val list = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
             for(connectedDevice in list){
                 if(connectedDevice.name == "KIDUCK"){
-                    if(loadingDialog.isShowing)
-                        loadingDialog.dismiss()
+                    isConnected = true
+                    break;
                 }
             }
-            if(loadingDialog.isShowing){
+            if(!isConnected){
                 toast("BLE 연결 실패, 다시 연결을 시도하세요.")
+                loadingDialog.dismiss()
                 finish()
             } else {
-                read()
-                Handler(Looper.getMainLooper()).postDelayed({write("AppConnected")},500)
+                read()// 통신 설정
+                Handler(Looper.getMainLooper()).postDelayed({
+                    write("AppConnected")
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if(readKiDuckData.isEmpty()) {
+                            loadingDialog.dismiss()
+                            finish()
+                        } else {
+                            if(readKiDuckData.size < 6){
+                                toast("KiDuck 데이터 불러오기 실패, 다시 연결을 시도하세요.")
+                                loadingDialog.dismiss()
+                                finish()
+                            } else {
+                                var curi = 0
+                                kiduckName = readKiDuckData[curi++]
+                                for(i in 0 until kiduckName.length){
+                                    if(kiduckName[i] == ' '){
+                                        kiduckName = kiduckName.substring(0,i)
+                                        break
+                                    }
+                                }
+
+                                dataCount = readKiDuckData[curi++]
+                                for(i in 0 until dataCount.length){
+                                    if(dataCount[i] == ' '){
+                                        dataCount = dataCount.substring(0,i)
+                                        break
+                                    }
+                                }
+                                DATA_COUNT = dataCount.toInt()
+                                MAX_STEPS = 0f
+                                MAX_DRINK = 0f
+                                MAX_COMMUNICATION = 0f
+                                SUM_STEPS = 0
+                                SUM_DRINK = 0
+                                SUM_COMMUNICATION = 0
+
+                                numOfSteps = ArrayList<Float>()
+                                amountOfDrink = ArrayList<Float>()
+                                numOfCommunication = ArrayList<Float>()
+                                for(i in 0 until DATA_COUNT){
+                                    val dayData = readKiDuckData[curi++].split(' ')
+                                    numOfSteps.add(dayData[0].toFloat())
+                                    MAX_STEPS = max(MAX_STEPS, dayData[0].toFloat())
+                                    SUM_STEPS += dayData[0].toInt()
+                                    amountOfDrink.add(dayData[1].toFloat())
+                                    MAX_DRINK = max(MAX_DRINK, dayData[1].toFloat())
+                                    SUM_DRINK += dayData[1].toInt()
+                                    numOfCommunication.add(dayData[2].toFloat())
+                                    MAX_COMMUNICATION = max(MAX_COMMUNICATION, dayData[2].toFloat())
+                                    SUM_COMMUNICATION += dayData[2].toInt()
+                                }
+                                Log.d(TAG, MAX_STEPS.toString())
+                                val thresholdData = readKiDuckData[curi++].split(' ')
+                                criteriaOfSteps = thresholdData[0]
+                                criteriaOfDrink = thresholdData[1]
+                                criteriaOfCommunication = thresholdData[2]
+                                kiduckPassword = readKiDuckData[curi++]
+                                emergencyAlarm_isEnabled = readKiDuckData[curi]
+
+                                // 요약 내용 업데이트
+                                binding.name.text = kiduckName + "의 기기"
+                                binding.time.text = "사용시간 : " + DATA_COUNT + " 일"
+                                binding.walk.text = "총 걸음수 : " + SUM_STEPS + " 보"
+                                binding.drink.text = "총 음수량 : " + SUM_DRINK + " mL"
+                                binding.communication.text = "타 기기와 통신 : " + SUM_COMMUNICATION + " 회"
+
+                                // 차트 설정
+                                setupStepChart()
+                                setupDrinkChart()
+                                setupCommunicationChart()
+                                loadingDialog.dismiss()
+                            }
+                        }
+                    }, 1000)
+                },500) // 통신 준비 완료를 알림
             }
         }, 2000)
 
-        kiduckName = "DONGSU"
-        dataCount = "7"
+    }
+    override fun onResume() {
+        super.onResume()
+        binding.chartWalk.setOnClickListener {
+            startActivity<StaticsActivity>(
+                "type" to "walk",
+                "data" to numOfSteps
+            )
+        }
 
-        numOfSteps = ArrayList<String>()
-        numOfSteps.add("1000")
-        numOfSteps.add("424")
-        numOfSteps.add("5959")
-        numOfSteps.add("5894")
-        numOfSteps.add("7233")
-        numOfSteps.add("1294")
-        numOfSteps.add("12399")
-        amountOfDrink = ArrayList<String>()
 
-        numOfCommunication = ArrayList<String>()
+        binding.settingButton.setOnClickListener {
+            startActivity<SettingsActivity>()
+        }
 
-        val DATA_COUNT = dataCount.toInt()
-        val MAX_STEPS = 12399f
+        binding.backButton.setOnClickListener { finish() } // 현재 activity 종료
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        if (deviceAddress == null || deviceAddress == ""){
+            return
+        }
+        disconnectGattServer()
+    }
 
-        // 요약 내용 없데이트
-        binding.name.text = kiduckName + "의 기기"
-
-        // 차트 설정
+    private fun setupStepChart() {
         var stepChart: BarChart = binding.chartWalk
 
         val step_entries = ArrayList<BarEntry>()
         for(i in 1..DATA_COUNT) {
-            step_entries.add(BarEntry(i.toFloat(), numOfSteps[i-1].toFloat()))
+            step_entries.add(BarEntry(i.toFloat(), numOfSteps[i-1]))
         }
 
         var step_set = BarDataSet(step_entries, "걸음수")
@@ -327,37 +421,153 @@ class SummaryActivity : AppCompatActivity() {
             setFitBars(true)
             invalidate()
         }
-
-
-
-
-        binding.chartWalk.setOnClickListener {
-            startActivity<StaticsActivity>(
-                "type" to "walk",
-                "data" to numOfSteps
-            )
-        }
-
-
-        binding.settingButton.setOnClickListener {
-            startActivity<SettingsActivity>()
-        }
-
-        binding.backButton.setOnClickListener { finish() } // 현재 activity 종료
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (deviceAddress == null || deviceAddress == ""){
-            return
+    private fun setupDrinkChart() {
+        var drinkChart: BarChart = binding.chartDrink
+
+        val drink_entries = ArrayList<BarEntry>()
+        for(i in 1..DATA_COUNT) {
+            drink_entries.add(BarEntry(i.toFloat(), amountOfDrink[i-1]))
         }
-        disconnectGattServer()
+
+        var drink_set = BarDataSet(drink_entries, "걸음수")
+            .apply {
+                color = Color.parseColor("#EB592A")
+                setDrawIcons(false)
+                setDrawValues(true)
+                valueFormatter = CustomDecimalFormatter()
+                valueTextColor = Color.BLACK
+            }
+
+        var drink_dataSet = ArrayList<IBarDataSet>()
+        drink_dataSet.add(drink_set)
+
+        var drink_data = BarData(drink_dataSet)
+            .apply {
+                barWidth = 0.8f
+                setValueTextSize(10f)
+            }
+
+        drinkChart.data = drink_data
+
+        drinkChart.apply {
+            description.isEnabled = false
+            background = getDrawable(R.drawable.chart_body_background)
+            setPinchZoom(false)
+            setDrawBarShadow(false)
+            setDrawValueAboveBar(true)
+            setDrawGridBackground(false)
+
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                granularity = 1f
+                setDrawGridLines(false)
+                setDrawAxisLine(true)
+                textSize = 12f
+                textColor = Color.parseColor("#A5A4A8")
+                valueFormatter = MyXAxisFormatter()
+            }
+
+            axisLeft.isEnabled = false
+
+            axisRight.apply {
+                axisMaximum = MAX_STEPS + 1f
+                axisMinimum = 0f
+                granularity = 1000f
+                setDrawLabels(true)
+                setDrawGridLines(true)
+                setDrawAxisLine(true)
+                axisLineColor = Color.parseColor("#A5A4A8") // 축 색깔 설정
+                gridColor = Color.parseColor("#A5A4A8") // 축 아닌 격자 색깔 설정
+                textColor = Color.parseColor("#A5A4A8") // 라벨 텍스트 컬러 설정
+                textSize = 13f //라벨 텍스트 크기
+            }
+
+            setTouchEnabled(true)
+            animateY(1000)
+            legend.isEnabled = false
+
+            data = drink_data
+            setFitBars(true)
+            invalidate()
+        }
+    }
+
+    private fun setupCommunicationChart() {
+        var commChart: BarChart = binding.chartCommunication
+
+        val comm_entries = ArrayList<BarEntry>()
+        for(i in 1..DATA_COUNT) {
+            comm_entries.add(BarEntry(i.toFloat(), numOfCommunication[i-1]))
+        }
+
+        var comm_set = BarDataSet(comm_entries, "걸음수")
+            .apply {
+                color = Color.parseColor("#EB592A")
+                setDrawIcons(false)
+                setDrawValues(true)
+                valueFormatter = CustomDecimalFormatter()
+                valueTextColor = Color.BLACK
+            }
+
+        var comm_dataSet = ArrayList<IBarDataSet>()
+        comm_dataSet.add(comm_set)
+
+        var comm_data = BarData(comm_dataSet)
+            .apply {
+                barWidth = 0.8f
+                setValueTextSize(10f)
+            }
+
+        commChart.data = comm_data
+
+        commChart.apply {
+            description.isEnabled = false
+            background = getDrawable(R.drawable.chart_body_background)
+            setPinchZoom(false)
+            setDrawBarShadow(false)
+            setDrawValueAboveBar(true)
+            setDrawGridBackground(false)
+
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                granularity = 1f
+                setDrawGridLines(false)
+                setDrawAxisLine(true)
+                textSize = 12f
+                textColor = Color.parseColor("#A5A4A8")
+                valueFormatter = MyXAxisFormatter()
+            }
+
+            axisLeft.isEnabled = false
+
+            axisRight.apply {
+                axisMaximum = MAX_STEPS + 1f
+                axisMinimum = 0f
+                granularity = 1000f
+                setDrawLabels(true)
+                setDrawGridLines(true)
+                setDrawAxisLine(true)
+                axisLineColor = Color.parseColor("#A5A4A8") // 축 색깔 설정
+                gridColor = Color.parseColor("#A5A4A8") // 축 아닌 격자 색깔 설정
+                textColor = Color.parseColor("#A5A4A8") // 라벨 텍스트 컬러 설정
+                textSize = 13f //라벨 텍스트 크기
+            }
+
+            setTouchEnabled(true)
+            animateY(1000)
+            legend.isEnabled = false
+
+            data = comm_data
+            setFitBars(true)
+            invalidate()
+        }
     }
 
     inner class MyXAxisFormatter : ValueFormatter() {
-        private val days = arrayOf("1차","2차","3차","4차","5차","6차","7차")
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-            return days.getOrNull(value.toInt()-1) ?: value.toString()
+            return value.toString().split(".")[0] + "일차"
         }
     }
 

@@ -23,14 +23,14 @@ class StaticsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val type = intent.getStringExtra("type")
-        val dataList = intent.getStringArrayListExtra("data")
+        val dataList = intent.getFloatArrayExtra("data")
         val DATA_COUNT = dataList!!.size
 
         var barChart: BarChart = binding.barchart
 
         val entries = ArrayList<BarEntry>()
         for(i in 1..DATA_COUNT) {
-            entries.add(BarEntry(i.toFloat(), dataList[i-1].toFloat()))
+            entries.add(BarEntry(i.toFloat(), dataList[i-1]))
         }
 
         var set = BarDataSet(entries, "걸음수")
