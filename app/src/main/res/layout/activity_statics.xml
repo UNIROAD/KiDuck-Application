@@ -213,7 +213,7 @@
                     android:background="@drawable/edittext_rounded_corner_rect"
                     android:ems="10"
                     android:gravity="right|center_vertical"
-                    android:inputType="textPersonName"
+                    android:inputType="number"
                     app:layout_constraintEnd_toStartOf="@+id/xAxisUnit"
                     app:layout_constraintStart_toEndOf="@+id/xAxisTitle"
                     app:layout_constraintTop_toTopOf="@+id/dateRangeTextBackground2" />
@@ -228,7 +228,7 @@
                     android:background="@drawable/edittext_rounded_corner_rect"
                     android:ems="10"
                     android:gravity="right|center_vertical"
-                    android:inputType="textPersonName"
+                    android:inputType="number"
                     app:layout_constraintEnd_toStartOf="@+id/yAxisUnit"
                     app:layout_constraintStart_toEndOf="@+id/yAxisTitle"
                     app:layout_constraintTop_toBottomOf="@+id/view8" />

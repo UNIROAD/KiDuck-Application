@@ -13,6 +13,7 @@ import androidx.core.os.postDelayed
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -310,7 +311,7 @@ class SummaryActivity : AppCompatActivity() {
 
                                 // 요약 내용 업데이트
                                 binding.name.text = kiduckName + "의 기기"
-                                binding.time.text = "사용시간 : " + DATA_COUNT + " 일"
+                                binding.time.text = "사용기간 : " + DATA_COUNT + " 일"
                                 binding.walk.text = "총 걸음수 : " + SUM_STEPS + " 보"
                                 binding.drink.text = "총 음수량 : " + SUM_DRINK + " mL"
                                 binding.communication.text = "타 기기와 통신 : " + SUM_COMMUNICATION + " 회"
@@ -319,6 +320,8 @@ class SummaryActivity : AppCompatActivity() {
                                 setupStepChart()
                                 setupDrinkChart()
                                 setupCommunicationChart()
+
+                                // 로딩 종료
                                 loadingDialog.dismiss()
                             }
                         }
@@ -337,6 +340,19 @@ class SummaryActivity : AppCompatActivity() {
             )
         }
 
+        binding.chartDrink.setOnClickListener {
+            startActivity<StaticsActivity>(
+                "type" to "drink",
+                "data" to amountOfDrink
+            )
+        }
+
+        binding.chartCommunication.setOnClickListener {
+            startActivity<StaticsActivity>(
+                "type" to "communication",
+                "data" to numOfCommunication
+            )
+        }
 
         binding.settingButton.setOnClickListener {
             startActivity<SettingsActivity>()
@@ -362,6 +378,7 @@ class SummaryActivity : AppCompatActivity() {
 
         var step_set = BarDataSet(step_entries, "걸음수")
             .apply {
+                axisDependency = YAxis.AxisDependency.RIGHT
                 color = Color.parseColor("#EB592A")
                 setDrawIcons(false)
                 setDrawValues(true)
@@ -433,6 +450,7 @@ class SummaryActivity : AppCompatActivity() {
 
         var drink_set = BarDataSet(drink_entries, "걸음수")
             .apply {
+                axisDependency = YAxis.AxisDependency.RIGHT
                 color = Color.parseColor("#EB592A")
                 setDrawIcons(false)
                 setDrawValues(true)
@@ -472,9 +490,9 @@ class SummaryActivity : AppCompatActivity() {
             axisLeft.isEnabled = false
 
             axisRight.apply {
-                axisMaximum = MAX_STEPS + 1f
+                axisMaximum = MAX_DRINK + 1f
                 axisMinimum = 0f
-                granularity = 1000f
+                granularity = 500f
                 setDrawLabels(true)
                 setDrawGridLines(true)
                 setDrawAxisLine(true)
@@ -504,6 +522,7 @@ class SummaryActivity : AppCompatActivity() {
 
         var comm_set = BarDataSet(comm_entries, "걸음수")
             .apply {
+                axisDependency = YAxis.AxisDependency.RIGHT
                 color = Color.parseColor("#EB592A")
                 setDrawIcons(false)
                 setDrawValues(true)
@@ -543,9 +562,9 @@ class SummaryActivity : AppCompatActivity() {
             axisLeft.isEnabled = false
 
             axisRight.apply {
-                axisMaximum = MAX_STEPS + 1f
+                axisMaximum = MAX_COMMUNICATION + 1f
                 axisMinimum = 0f
-                granularity = 1000f
+                granularity = 2f
                 setDrawLabels(true)
                 setDrawGridLines(true)
                 setDrawAxisLine(true)
