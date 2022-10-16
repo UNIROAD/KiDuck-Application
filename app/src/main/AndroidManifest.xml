@@ -12,7 +12,6 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
 
     <application
@@ -22,6 +21,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KiDuck">
+        <service
+            android:name=".BLEService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".EmergencyAlarmActivity"
             android:exported="false" />

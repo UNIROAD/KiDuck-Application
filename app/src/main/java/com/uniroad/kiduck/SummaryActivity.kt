@@ -234,7 +234,6 @@ class SummaryActivity : AppCompatActivity() {
         bluetoothGatt = device.connectGatt(applicationContext, false, gattClientCallback)
         val loadingDialog = LoadingDialog(this)
         loadingDialog.show()
-
         var isConnected = false
         Handler(Looper.getMainLooper()).postDelayed({
             val list = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)

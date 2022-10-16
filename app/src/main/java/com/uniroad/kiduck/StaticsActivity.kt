@@ -1,5 +1,6 @@
 package com.uniroad.kiduck
 
+import android.bluetooth.BluetoothGatt
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.ContactsContract.Data
