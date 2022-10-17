@@ -42,49 +42,40 @@
                     android:id="@+id/drinkAmountBody"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="15dp"
                     android:fontFamily="@font/font_swagger"
                     android:text="하루 목표                     mL"
                     android:textColor="@color/black"
                     android:textSize="29sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/drinkSwitch" />
+                    app:layout_constraintTop_toBottomOf="@+id/view6" />
 
                 <TextView
                     android:id="@+id/walkCountBody"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/font_swagger"
                     android:text="하루 목표                    걸음"
                     android:textColor="@color/black"
                     android:textSize="29sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/walkSwitch" />
-
-                <Switch
-                    android:id="@+id/drinkSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view6" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/communicationCountBody"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/font_swagger"
                     android:text="하루 목표                       회"
                     android:textColor="@color/black"
                     android:textSize="29sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/communicationSwitch" />
+                    app:layout_constraintTop_toBottomOf="@+id/view7" />
 
                 <TextView
                     android:id="@+id/communicationCountTitle"
@@ -104,7 +95,7 @@
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginEnd="10dp"
                     android:background="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -124,15 +115,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
-                    android:id="@+id/communicationSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view7" />
-
                 <TextView
                     android:id="@+id/drinkAmountTitle"
                     android:layout_width="wrap_content"
@@ -146,26 +128,101 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/view6" />
 
-                <Switch
-                    android:id="@+id/walkSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <View
                     android:id="@+id/view6"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginEnd="10dp"
                     android:background="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/walkCountBody" />
+
+                <EditText
+                    android:id="@+id/editStep"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginEnd="35dp"
+                    android:background="@drawable/edittext_rounded_corner_rect"
+                    android:ems="10"
+                    android:gravity="right|center_vertical"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    app:layout_constraintBottom_toBottomOf="@+id/walkCountBody"
+                    app:layout_constraintEnd_toEndOf="@+id/walkCountBody"
+                    app:layout_constraintStart_toStartOf="@+id/walkCountBody"
+                    app:layout_constraintTop_toTopOf="@+id/walkCountBody" />
+
+                <EditText
+                    android:id="@+id/editDrink"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginEnd="35dp"
+                    android:background="@drawable/edittext_rounded_corner_rect"
+                    android:ems="10"
+                    android:gravity="right|center_vertical"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    app:layout_constraintBottom_toBottomOf="@+id/drinkAmountBody"
+                    app:layout_constraintEnd_toEndOf="@+id/drinkAmountBody"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/drinkAmountBody"
+                    app:layout_constraintTop_toTopOf="@+id/drinkAmountBody"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <EditText
+                    android:id="@+id/editCommunication"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginEnd="35dp"
+                    android:background="@drawable/edittext_rounded_corner_rect"
+                    android:ems="10"
+                    android:gravity="right|center_vertical"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    app:layout_constraintBottom_toBottomOf="@+id/communicationCountBody"
+                    app:layout_constraintEnd_toEndOf="@+id/communicationCountBody"
+                    app:layout_constraintStart_toStartOf="@+id/communicationCountBody"
+                    app:layout_constraintTop_toTopOf="@+id/communicationCountBody"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/growthPerStep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/font_swagger"
+                    android:text="0.12 h/걸음"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/walkCountBody" />
+
+                <TextView
+                    android:id="@+id/growthPerDrink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/font_swagger"
+                    android:text="0.5 h/mL"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editDrink" />
+
+                <TextView
+                    android:id="@+id/growthPerCommunication"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/font_swagger"
+                    android:text="1 h/통신"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editCommunication" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

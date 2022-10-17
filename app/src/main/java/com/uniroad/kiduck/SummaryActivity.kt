@@ -1,10 +1,11 @@
 package com.uniroad.kiduck
 
 import android.bluetooth.*
-import android.content.Context
+import android.content.*
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.os.Looper.*
 import android.util.Log
@@ -35,147 +36,53 @@ import kotlin.collections.ArrayList
 
 class SummaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySummaryBinding
-
-    private lateinit var device: BluetoothDevice
-    private val bluetoothAdapter: BluetoothAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        bluetoothManager.adapter
-    }
-    private lateinit var bluetoothGatt: BluetoothGatt
-
-    private var readKiDuckData = mutableListOf<String>()
     private val TAG = "BLE_GATT"
-    private val gattClientCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
-        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
-            super.onConnectionStateChange(gatt, status, newState)
-            if( status == BluetoothGatt.GATT_FAILURE ) {
-                disconnectGattServer()
-                return
-            } else if( status != BluetoothGatt.GATT_SUCCESS ) {
-                disconnectGattServer()
-                return
-            }
-            if( newState == BluetoothProfile.STATE_CONNECTED ) {
-                // update the connection status message
-                Log.d(TAG, "Connected to the GATT server")
-                gatt.discoverServices()
-            } else if ( newState == BluetoothProfile.STATE_DISCONNECTED ) {
-                disconnectGattServer()
-            }
-        }
-
-        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            super.onServicesDiscovered(gatt, status)
-
-
-            // check if the discovery failed
-            if (status != BluetoothGatt.GATT_SUCCESS) {
-                Log.e(TAG, "Device service discovery failed, status: $status")
-                return
-            }
-            // log for successful discovery
-            Log.d(TAG, "Services discovery is successful")
-        }
-
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic
-        ) {
-            super.onCharacteristicChanged(gatt, characteristic)
-            //Log.d(TAG, "characteristic changed: " + characteristic.uuid.toString())
-            readCharacteristic(characteristic)
-        }
-
-        override fun onCharacteristicWrite(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?,
-            status: Int
-        ) {
-            super.onCharacteristicWrite(gatt, characteristic, status)
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.d(TAG, "Characteristic written successfully")
-            } else {
-                Log.e(TAG, "Characteristic write unsuccessful, status: $status")
-                disconnectGattServer()
-            }
-        }
-
-        override fun onCharacteristicRead(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic,
-            status: Int
-        ) {
-            super.onCharacteristicRead(gatt, characteristic, status)
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.d(TAG, "Characteristic read successfully")
-                readCharacteristic(characteristic)
-            } else {
-                Log.e(TAG, "Characteristic read unsuccessful, status: $status")
-                // Trying to read from the Time Characteristic? It doesnt have the property or permissions
-                // set to allow this. Normally this would be an error and you would want to:
-                // disconnectGattServer();
-            }
-        }
-
-
-
-        /**
-         * Log the value of the characteristic
-         * @param characteristic
-         */
-        private fun readCharacteristic(characteristic: BluetoothGattCharacteristic) {
-            val msg = characteristic.getStringValue(0)
-            readKiDuckData.add(msg)
-            Log.d(TAG, "read: $msg")
-        }
-    }
-
-    fun disconnectGattServer() {
-        Log.d(TAG, "Closing Gatt connection")
-        // disconnect and close the gatt
-        if (bluetoothGatt != null) {
-            bluetoothGatt!!.disconnect()
-            bluetoothGatt!!.close()
-        }
-    }
-
-    fun read(){
-        val respCharacteristic = bluetoothGatt?.let { BluetoothUtils.findResponseCharacteristic(it) }
-        // disconnect if the characteristic is not found
-        if( respCharacteristic == null ) {
-            Log.e(TAG, "Unable to find cmd characteristic")
-            disconnectGattServer()
-            return
-        }
-
-        bluetoothGatt.setCharacteristicNotification(respCharacteristic, true)
-        // UUID for notification
-        val descriptor:BluetoothGattDescriptor = respCharacteristic.getDescriptor(
-            UUID.fromString(Constants.CLIENT_CHARACTERISTIC_CONFIG)
-        )
-        descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-        bluetoothGatt.writeDescriptor(descriptor)
-    }
-
-    // write 사용시 delay 추가 해야함
-    fun write(msg:String){
-        val cmdCharacteristic = BluetoothUtils.findResponseCharacteristic(bluetoothGatt!!)
-        // disconnect if the characteristic is not found
-        if (cmdCharacteristic == null) {
-            Log.e(TAG, "Unable to find cmd characteristic")
-            disconnectGattServer()
-            return
-        }
-        cmdCharacteristic.setValue(msg)
-        cmdCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
-        val success: Boolean = bluetoothGatt!!.writeCharacteristic(cmdCharacteristic)
-        // check the result
-        if( !success ) {
-            Log.e(TAG, "Failed to write command")
-        }
-    }
-
+    private var bleService: BLEService? = null
     private var deviceAddress:String?= null
+    private var readKiDuckData = mutableListOf<String>()
+    private var mConnected = false
+
+    // Code to manage Service lifecycle.
+    private val mServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
+            bleService = (service as BLEService.LocalBinder).service
+            if (!bleService!!.initialize()) {
+                Log.e(TAG, "Unable to initialize Bluetooth")
+                finish()
+            }
+            // Automatically connects to the device upon successful start-up initialization.
+            bleService!!.connect(deviceAddress)
+        }
+
+        override fun onServiceDisconnected(componentName: ComponentName) {
+            bleService = null
+        }
+    }
+
+    // Handles various events fired by the Service.
+    // ACTION_GATT_CONNECTED: connected to a GATT server.
+    // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
+    // ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
+    // ACTION_DATA_AVAILABLE: received data from the device.  This can be a result of read
+    //                        or notification operations.
+    // ACTION_DATA_WRITTEN: written data to the device.
+    private val mGattUpdateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (BLEService.ACTION_GATT_CONNECTED == action) {
+                mConnected = true
+            } else if (BLEService.ACTION_GATT_DISCONNECTED == action) {
+                mConnected = false
+            } else if (BLEService.ACTION_GATT_SERVICES_DISCOVERED == action) {
+
+            } else if (BLEService.ACTION_DATA_AVAILABLE == action) {
+                val msg = intent.getStringExtra(BLEService.EXTRA_DATA)
+                readKiDuckData.add(msg!!)
+            } else if (BLEService.ACTION_DATA_WRITTEN == action) {
+
+            }
+        }
+    }
     /*
     키덕으로부터 받아야 하는 데이터
         이름
@@ -214,6 +121,8 @@ class SummaryActivity : AppCompatActivity() {
     private var SUM_DRINK = 0
     private var SUM_COMMUNICATION = 0
 
+    private var loadingDialog:LoadingDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySummaryBinding.inflate(layoutInflater)
@@ -230,10 +139,54 @@ class SummaryActivity : AppCompatActivity() {
             return
         }
 
-        device = bluetoothAdapter.getRemoteDevice(deviceAddress)
-        bluetoothGatt = device.connectGatt(applicationContext, false, gattClientCallback)
-        val loadingDialog = LoadingDialog(this)
-        loadingDialog.show()
+        val gattServiceIntent = Intent(this, BLEService::class.java)
+        bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
+
+        binding.chartWalk.setOnClickListener {
+            startActivity<StaticsActivity>(
+                "type" to "walk",
+                "data" to numOfSteps
+            )
+        }
+
+        binding.chartDrink.setOnClickListener {
+            startActivity<StaticsActivity>(
+                "type" to "drink",
+                "data" to amountOfDrink
+            )
+        }
+
+        binding.chartCommunication.setOnClickListener {
+            startActivity<StaticsActivity>(
+                "type" to "communication",
+                "data" to numOfCommunication
+            )
+        }
+
+        binding.settingButton.setOnClickListener {
+            startActivity<SettingsActivity>(
+                "deviceAddress" to deviceAddress,
+                "criteriaOfSteps" to criteriaOfSteps,
+                "criteriaOfDrink" to criteriaOfDrink,
+                "criteriaOfCommunication" to criteriaOfCommunication,
+                "kiduckName" to kiduckName,
+                "kiduckPassword" to kiduckPassword,
+                "emergencyAlarm_isEnabled" to emergencyAlarm_isEnabled
+            )
+        }
+
+        binding.backButton.setOnClickListener { finish() } // 현재 activity 종료
+    }
+    override fun onResume() {
+        super.onResume()
+        loadingDialog = LoadingDialog(this)
+        loadingDialog!!.show()
+
+        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
+        if(bleService != null){
+            val result = bleService!!.connect(deviceAddress)
+            Log.d(TAG, "Connect request result=" + result)
+        }
         var isConnected = false
         Handler(Looper.getMainLooper()).postDelayed({
             val list = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
@@ -245,20 +198,21 @@ class SummaryActivity : AppCompatActivity() {
             }
             if(!isConnected){
                 toast("BLE 연결 실패, 다시 연결을 시도하세요.")
-                loadingDialog.dismiss()
+                loadingDialog!!.dismiss()
                 finish()
             } else {
-                read()// 통신 설정
+                bleService!!.setCharacteristicNotification(true)
                 Handler(Looper.getMainLooper()).postDelayed({
-                    write("AppConnected")
+                    bleService!!.write("AppConnected")
                     Handler(Looper.getMainLooper()).postDelayed({
                         if(readKiDuckData.isEmpty()) {
-                            loadingDialog.dismiss()
+                            toast("KiDuck 데이터 불러오기 실패, 다시 연결을 시도하세요.")
+                            loadingDialog!!.dismiss()
                             finish()
                         } else {
                             if(readKiDuckData.size < 6){
                                 toast("KiDuck 데이터 불러오기 실패, 다시 연결을 시도하세요.")
-                                loadingDialog.dismiss()
+                                loadingDialog!!.dismiss()
                                 finish()
                             } else {
                                 var curi = 0
@@ -320,8 +274,9 @@ class SummaryActivity : AppCompatActivity() {
                                 setupDrinkChart()
                                 setupCommunicationChart()
 
+                                readKiDuckData.clear()
                                 // 로딩 종료
-                                loadingDialog.dismiss()
+                                loadingDialog!!.dismiss()
                             }
                         }
                     }, 1000)
@@ -329,42 +284,18 @@ class SummaryActivity : AppCompatActivity() {
             }
         }, 2000)
 
+
     }
-    override fun onResume() {
-        super.onResume()
-        binding.chartWalk.setOnClickListener {
-            startActivity<StaticsActivity>(
-                "type" to "walk",
-                "data" to numOfSteps
-            )
-        }
 
-        binding.chartDrink.setOnClickListener {
-            startActivity<StaticsActivity>(
-                "type" to "drink",
-                "data" to amountOfDrink
-            )
-        }
-
-        binding.chartCommunication.setOnClickListener {
-            startActivity<StaticsActivity>(
-                "type" to "communication",
-                "data" to numOfCommunication
-            )
-        }
-
-        binding.settingButton.setOnClickListener {
-            startActivity<SettingsActivity>()
-        }
-
-        binding.backButton.setOnClickListener { finish() } // 현재 activity 종료
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(mGattUpdateReceiver)
     }
+
     override fun onDestroy() {
         super.onDestroy()
-        if (deviceAddress == null || deviceAddress == ""){
-            return
-        }
-        disconnectGattServer()
+        unbindService(mServiceConnection)
+        bleService = null
     }
 
     private fun setupStepChart() {
@@ -595,5 +526,16 @@ class SummaryActivity : AppCompatActivity() {
             return score[0]
         }
     }
+
+    private fun makeGattUpdateIntentFilter(): IntentFilter {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(BLEService.ACTION_GATT_CONNECTED)
+        intentFilter.addAction(BLEService.ACTION_GATT_DISCONNECTED)
+        intentFilter.addAction(BLEService.ACTION_GATT_SERVICES_DISCOVERED)
+        intentFilter.addAction(BLEService.ACTION_DATA_AVAILABLE)
+        intentFilter.addAction(BLEService.ACTION_DATA_WRITTEN)
+        return intentFilter
+    }
 }
+
 

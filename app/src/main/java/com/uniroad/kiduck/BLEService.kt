@@ -4,6 +4,7 @@ import android.app.Service
 import android.bluetooth.*
 import android.content.Context
 import android.content.Intent
+import android.nfc.NfcAdapter.EXTRA_DATA
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
@@ -77,6 +78,7 @@ class BLEService : Service() {
             super.onCharacteristicWrite(gatt, characteristic, status)
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.d(TAG, "Characteristic written successfully")
+                broadcastUpdate(ACTION_DATA_WRITTEN)
             } else {
                 Log.e(TAG, "Characteristic write unsuccessful, status: $status")
                 disconnectGattServer()
@@ -110,11 +112,10 @@ class BLEService : Service() {
                                 characteristic: BluetoothGattCharacteristic) {
         val intent = Intent(action)
 
-        if (Constants.CHARACTERISTIC_RESPONSE_STRING == characteristic.uuid.toString()) {
-            val msg = characteristic.getStringValue(0)
-            Log.d(TAG, "read: $msg")
-            intent.putExtra(EXTRA_DATA, msg)
-        }
+        val msg = characteristic.getStringValue(0)
+        Log.d(TAG, "read: $msg")
+        intent.putExtra(EXTRA_DATA, msg)
+
         sendBroadcast(intent)
     }
 
@@ -135,13 +136,13 @@ class BLEService : Service() {
             return
         }
 
-        bluetoothGatt.setCharacteristicNotification(respCharacteristic, enabled)
+        bluetoothGatt!!.setCharacteristicNotification(respCharacteristic, enabled)
         // UUID for notification
         val descriptor:BluetoothGattDescriptor = respCharacteristic.getDescriptor(
             UUID.fromString(Constants.CLIENT_CHARACTERISTIC_CONFIG)
         )
         descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-        bluetoothGatt.writeDescriptor(descriptor)
+        bluetoothGatt!!.writeDescriptor(descriptor)
     }
 
     // write 사용시 delay 추가 해야함
@@ -276,11 +277,11 @@ class BLEService : Service() {
         private val STATE_CONNECTING = 1
         private val STATE_CONNECTED = 2
 
-        val ACTION_GATT_CONNECTED = "com.example.bluetooth.le.ACTION_GATT_CONNECTED"
-        val ACTION_GATT_DISCONNECTED = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED"
-        val ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
-        val ACTION_DATA_AVAILABLE = "com.example.bluetooth.le.ACTION_DATA_AVAILABLE"
-        val ACTION_DATA_WRITE = "com.example"
-        val EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA"
+        val ACTION_GATT_CONNECTED = "com.uniroad.bluetooth.le.ACTION_GATT_CONNECTED"
+        val ACTION_GATT_DISCONNECTED = "com.uniroad.bluetooth.le.ACTION_GATT_DISCONNECTED"
+        val ACTION_GATT_SERVICES_DISCOVERED = "com.uniroad.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
+        val ACTION_DATA_AVAILABLE = "com.uniroad.bluetooth.le.ACTION_DATA_AVAILABLE"
+        val ACTION_DATA_WRITTEN = "com.uniroad.bluetooth.le.ACTION_DATA_WRITTEN"
+        val EXTRA_DATA = "com.uniroad.bluetooth.le.EXTRA_DATA"
     }
 }
