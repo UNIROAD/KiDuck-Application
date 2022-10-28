@@ -24,7 +24,6 @@ import com.uniroad.kiduck.Constants.Companion.CHARACTERISTIC_COMMAND_STRING
 import com.uniroad.kiduck.Constants.Companion.CHARACTERISTIC_RESPONSE_STRING
 import com.uniroad.kiduck.Constants.Companion.SERVICE_STRING
 import com.uniroad.kiduck.databinding.ActivitySummaryBinding
-import kotlinx.coroutines.experimental.Delay
 import org.jetbrains.anko.bluetoothManager
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -107,11 +106,6 @@ class SummaryActivity : AppCompatActivity() {
     private lateinit var numOfSteps: ArrayList<Float>
     private lateinit var amountOfDrink: ArrayList<Float>
     private lateinit var numOfCommunication: ArrayList<Float>
-    private lateinit var criteriaOfSteps: String
-    private lateinit var criteriaOfDrink: String
-    private lateinit var criteriaOfCommunication: String
-    private lateinit var kiduckPassword: String
-    private lateinit var emergencyAlarm_isEnabled: String
 
     private var DATA_COUNT = 0
     private var MAX_STEPS = 0f
@@ -165,13 +159,7 @@ class SummaryActivity : AppCompatActivity() {
 
         binding.settingButton.setOnClickListener {
             startActivity<SettingsActivity>(
-                "deviceAddress" to deviceAddress,
-                "criteriaOfSteps" to criteriaOfSteps,
-                "criteriaOfDrink" to criteriaOfDrink,
-                "criteriaOfCommunication" to criteriaOfCommunication,
-                "kiduckName" to kiduckName,
-                "kiduckPassword" to kiduckPassword,
-                "emergencyAlarm_isEnabled" to emergencyAlarm_isEnabled
+                "deviceAddress" to deviceAddress
             )
         }
 
@@ -254,13 +242,6 @@ class SummaryActivity : AppCompatActivity() {
                                     MAX_COMMUNICATION = max(MAX_COMMUNICATION, dayData[2].toFloat())
                                     SUM_COMMUNICATION += dayData[2].toInt()
                                 }
-                                Log.d(TAG, MAX_STEPS.toString())
-                                val thresholdData = readKiDuckData[curi++].split(' ')
-                                criteriaOfSteps = thresholdData[0]
-                                criteriaOfDrink = thresholdData[1]
-                                criteriaOfCommunication = thresholdData[2]
-                                kiduckPassword = readKiDuckData[curi++]
-                                emergencyAlarm_isEnabled = readKiDuckData[curi]
 
                                 // 요약 내용 업데이트
                                 binding.name.text = kiduckName + "의 기기"

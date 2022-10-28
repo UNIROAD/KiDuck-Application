@@ -1,5 +1,6 @@
 package com.uniroad.kiduck
 
+import android.bluetooth.BluetoothProfile
 import android.content.*
 import android.os.Bundle
 import android.os.Handler
@@ -8,6 +9,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.uniroad.kiduck.databinding.ActivityChangeNameBinding
+import org.jetbrains.anko.bluetoothManager
 import org.jetbrains.anko.toast
 
 class ChangeNameActivity : AppCompatActivity() {
@@ -71,13 +73,57 @@ class ChangeNameActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         deviceAddress = intent.getStringExtra("deviceAddress")
-        kiduckName = intent.getStringExtra("kiduckName")
-
-        binding.currentName.text = kiduckName!!
 
         val gattServiceIntent = Intent(this, BLEService::class.java)
         bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
+
+        loadingDialog = LoadingDialog(this)
+        loadingDialog!!.show()
+
+        if(bleService != null){
+            val result = bleService!!.connect(deviceAddress)
+            Log.d(TAG, "Connect request result=" + result)
+        }
+        var isConnected = false
+        Handler(Looper.getMainLooper()).postDelayed({
+            val list = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
+            for(connectedDevice in list){
+                if(connectedDevice.name == "KIDUCK"){
+                    isConnected = true
+                    break;
+                }
+            }
+            if(!isConnected){
+                toast("BLE 연결 실패, 다시 연결을 시도하세요.")
+                loadingDialog!!.dismiss()
+                finish()
+            } else {
+                bleService!!.setCharacteristicNotification(true)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    bleService!!.write("InitName")
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if(readKiDuckData.isEmpty()) {
+                            toast("KiDuck 데이터 불러오기 실패, 다시 연결을 시도하세요.")
+                            loadingDialog!!.dismiss()
+                            finish()
+                        } else {
+                            if(readKiDuckData[0] == "Fail to send        "){
+                                toast("KiDuck 데이터 불러오기 실패, 다시 연결을 시도하세요.")
+                                readKiDuckData.clear()
+                                loadingDialog!!.dismiss()
+                                finish()
+                                return@postDelayed
+                            }
+                            kiduckName = readKiDuckData[0].trim()
+                            readKiDuckData.clear()
+                            binding.currentName.text = kiduckName!!
+                            loadingDialog!!.dismiss()
+                        }
+                    }, 1000)
+                },500) // 통신 준비 완료를 알림
+            }
+        }, 2000)
 
         binding.setNameButton.setOnClickListener {
             val nextName = binding.nextName.text.toString().trim()
@@ -110,6 +156,7 @@ class ChangeNameActivity : AppCompatActivity() {
                                         } else {
                                             if (readKiDuckData[0] == "SUCCESS") {
                                                 readKiDuckData.clear()
+                                                binding.currentName.text = nextName
                                                 toast("이름 업데이트 완료")
                                                 loadingDialog!!.dismiss()
                                             } else {

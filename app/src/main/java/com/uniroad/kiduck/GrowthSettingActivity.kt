@@ -1,5 +1,6 @@
 package com.uniroad.kiduck
 
+import android.bluetooth.BluetoothProfile
 import android.content.*
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +11,7 @@ import android.text.TextWatcher
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.uniroad.kiduck.databinding.ActivityGrowthSettingBinding
+import org.jetbrains.anko.bluetoothManager
 import org.jetbrains.anko.toast
 
 class GrowthSettingActivity : AppCompatActivity() {
@@ -75,27 +77,86 @@ class GrowthSettingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         deviceAddress = intent.getStringExtra("deviceAddress")
-        criteriaOfSteps = intent.getStringExtra("criteriaOfSteps")
-        criteriaOfDrink = intent.getStringExtra("criteriaOfDrink")
-        criteriaOfCommunication = intent.getStringExtra("criteriaOfCommunication")
 
-        val INIT_CRITERIA_STEP = criteriaOfSteps!!.trim().toIntOrNull()
-        val INIT_CRITERIA_DRINK = criteriaOfDrink!!.trim().toIntOrNull()
-        val INIT_CRITERIA_COMMUNICATION = criteriaOfCommunication!!.trim().toIntOrNull()
+        val gattServiceIntent = Intent(this, BLEService::class.java)
+        bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
+        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
 
-        if(INIT_CRITERIA_STEP == null || INIT_CRITERIA_DRINK == null || INIT_CRITERIA_COMMUNICATION == null) {
-            toast("기존 성장 기준 불러오기 실패, BLE 연결을 다시 시도하세요.")
-            finish()
-            return
+        loadingDialog = LoadingDialog(this)
+        loadingDialog!!.show()
+
+        if(bleService != null){
+            val result = bleService!!.connect(deviceAddress)
+            Log.d(TAG, "Connect request result=" + result)
         }
+        var isConnected = false
+        Handler(Looper.getMainLooper()).postDelayed({
+            val list = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
+            for(connectedDevice in list){
+                if(connectedDevice.name == "KIDUCK"){
+                    isConnected = true
+                    break;
+                }
+            }
+            if(!isConnected){
+                toast("BLE 연결 실패, 다시 연결을 시도하세요.")
+                loadingDialog!!.dismiss()
+                finish()
+            } else {
+                bleService!!.setCharacteristicNotification(true)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    bleService!!.write("InitGrowth")
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if(readKiDuckData.isEmpty()) {
+                            toast("KiDuck 데이터 불러오기 실패, 다시 연결을 시도하세요.")
+                            loadingDialog!!.dismiss()
+                            finish()
+                        } else {
+                            if(readKiDuckData[0] == "Fail to send        "){
+                                toast("KiDuck 데이터 불러오기 실패, 다시 연결을 시도하세요.")
+                                readKiDuckData.clear()
+                                loadingDialog!!.dismiss()
+                                finish()
+                                return@postDelayed
+                            }
+                            val thresholdData = readKiDuckData[0].split(' ')
+                            readKiDuckData.clear()
+                            if(thresholdData.size < 3){
+                                toast("KiDuck 데이터 불러오기 실패, 다시 연결을 시도하세요.")
+                                loadingDialog!!.dismiss()
+                                finish()
+                                return@postDelayed
+                            }
+                            criteriaOfSteps = thresholdData[0]
+                            criteriaOfDrink = thresholdData[1]
+                            criteriaOfCommunication = thresholdData[2]
 
-        binding.editStep.setText(INIT_CRITERIA_STEP.toString())
-        binding.editDrink.setText(INIT_CRITERIA_DRINK.toString())
-        binding.editCommunication.setText(INIT_CRITERIA_COMMUNICATION.toString())
+                            val INIT_CRITERIA_STEP = criteriaOfSteps!!.trim().toIntOrNull()
+                            val INIT_CRITERIA_DRINK = criteriaOfDrink!!.trim().toIntOrNull()
+                            val INIT_CRITERIA_COMMUNICATION = criteriaOfCommunication!!.trim().toIntOrNull()
 
-        binding.growthPerStep.text = (24f/INIT_CRITERIA_STEP!!.toFloat()).toString() + " h/걸음"
-        binding.growthPerDrink.text = (24f/INIT_CRITERIA_DRINK!!.toFloat()).toString() + " h/mL"
-        binding.growthPerCommunication.text = (24f/INIT_CRITERIA_COMMUNICATION!!.toFloat()).toString() + " h/통신"
+                            if(INIT_CRITERIA_STEP == null || INIT_CRITERIA_DRINK == null || INIT_CRITERIA_COMMUNICATION == null) {
+                                toast("기존 성장 기준 불러오기 실패, BLE 연결을 다시 시도하세요.")
+                                loadingDialog!!.dismiss()
+                                finish()
+                                return@postDelayed
+                            }
+
+                            binding.editStep.setText(INIT_CRITERIA_STEP.toString())
+                            binding.editDrink.setText(INIT_CRITERIA_DRINK.toString())
+                            binding.editCommunication.setText(INIT_CRITERIA_COMMUNICATION.toString())
+
+                            binding.growthPerStep.text = (24f/INIT_CRITERIA_STEP!!.toFloat()).toString() + " h/걸음"
+                            binding.growthPerDrink.text = (24f/INIT_CRITERIA_DRINK!!.toFloat()).toString() + " h/mL"
+                            binding.growthPerCommunication.text = (24f/INIT_CRITERIA_COMMUNICATION!!.toFloat()).toString() + " h/통신"
+
+                            loadingDialog!!.dismiss()
+                        }
+                    }, 1000)
+                },500) // 통신 준비 완료를 알림
+            }
+        }, 2000)
+
 
         binding.editStep.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -141,10 +202,6 @@ class GrowthSettingActivity : AppCompatActivity() {
                 }
             }
         })
-
-        val gattServiceIntent = Intent(this, BLEService::class.java)
-        bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
 
         binding.setGrowthButton.setOnClickListener {
             val step = binding.editStep.text.toString().toIntOrNull()
