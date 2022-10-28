@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -14,10 +15,10 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.uniroad.kiduck.databinding.ActivityMainBinding
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+
 
 class MainActivity : AppCompatActivity() {
     private val PERMISSION_RESULT_CODE = 1334
@@ -104,6 +105,7 @@ class MainActivity : AppCompatActivity() {
                 for (result in grantResults) {
                     if (result != PackageManager.PERMISSION_GRANTED) {
                         Toast.makeText(this, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                        finish()
                     }
                 }
             }
@@ -111,16 +113,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkPermission() {
-        var permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        var locationPermission = arrayListOf<String>(
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
 
-        var arrayPermission = ArrayList<String>()
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            arrayPermission.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
+        var arrayBTPermission = arrayListOf<String>(
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
 
-        if (arrayPermission.size > 0) {
-            ActivityCompat.requestPermissions(this, arrayPermission.toTypedArray(), PERMISSION_RESULT_CODE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if(!hasPermissions(this, arrayBTPermission.toTypedArray())){
+                requestPermissions(arrayBTPermission.toTypedArray(), PERMISSION_RESULT_CODE)
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!hasPermissions(this, locationPermission.toTypedArray())){
+                requestPermissions(locationPermission.toTypedArray(), PERMISSION_RESULT_CODE)
+            }
         }
+    }
+
+    private fun hasPermissions(context: Context, permissions: Array<String>): Boolean {
+        for (permission in permissions) {
+            if (ActivityCompat.checkSelfPermission(context, permission)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false
+            }
+        }
+        return true
     }
 
 }
