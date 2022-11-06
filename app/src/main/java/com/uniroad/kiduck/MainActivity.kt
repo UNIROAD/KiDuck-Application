@@ -72,12 +72,6 @@ class MainActivity : AppCompatActivity() {
             Log.d("dongsu","before start connect activity")
             startActivity<ConnectKiduckActivity>()
         }
-
-        binding.Kiduck1.setOnClickListener {
-            startActivity<SummaryActivity>(
-                "address" to null
-            )
-        }
     }
 
     fun checkBT() {

@@ -84,7 +84,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/font_swagger"
-                    android:text="통신 횟수"
+                    android:text="친구 만나기"
                     android:textColor="@color/black"
                     android:textSize="29sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -122,7 +122,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/font_swagger"
-                    android:text="음수량"
+                    android:text="물 섭취량"
                     android:textColor="@color/black"
                     android:textSize="29sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -201,6 +201,28 @@
                     android:text="0.12 h/걸음"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/walkCountBody" />
+
+                <TextView
+                    android:id="@+id/recommendStep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/font_swagger"
+                    android:text="권장 걸음 수: 10000~13000보"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/walkCountTitle" />
+
+                <TextView
+                    android:id="@+id/recommendDrink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/font_swagger"
+                    android:text="권장 물 섭취량: 체중(kg) X 30 mL"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/drinkAmountTitle" />
 
                 <TextView
                     android:id="@+id/growthPerDrink"

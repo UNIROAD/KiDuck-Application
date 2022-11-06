@@ -247,8 +247,8 @@ class SummaryActivity : AppCompatActivity() {
                                 binding.name.text = kiduckName + "의 기기"
                                 binding.time.text = "사용기간 : " + DATA_COUNT + " 일"
                                 binding.walk.text = "총 걸음수 : " + SUM_STEPS + " 보"
-                                binding.drink.text = "총 음수량 : " + SUM_DRINK + " mL"
-                                binding.communication.text = "타 기기와 통신 : " + SUM_COMMUNICATION + " 회"
+                                binding.drink.text = "총 물 섭취량 : " + SUM_DRINK + " mL"
+                                binding.communication.text = "총 친구 만나기 : " + SUM_COMMUNICATION + " 회"
 
                                 // 차트 설정
                                 setupStepChart()

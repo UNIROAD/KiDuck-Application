@@ -221,9 +221,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
                     android:layout_marginBottom="5dp"
-                    android:text="음수량"
-                    android:textColor="@color/black"
                     android:fontFamily="@font/font_omnigothic"
+                    android:text="물 섭취량"
+                    android:textColor="@color/black"
                     app:layout_constraintBottom_toTopOf="@+id/chartDrink"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -233,9 +233,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
                     android:layout_marginBottom="5dp"
-                    android:text="통신 횟수"
-                    android:textColor="@color/black"
                     android:fontFamily="@font/font_omnigothic"
+                    android:text="친구 만나기"
+                    android:textColor="@color/black"
                     app:layout_constraintBottom_toTopOf="@+id/chartCommunication"
                     app:layout_constraintStart_toStartOf="parent" />
 

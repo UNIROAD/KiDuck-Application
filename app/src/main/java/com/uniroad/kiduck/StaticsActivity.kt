@@ -56,13 +56,13 @@ class StaticsActivity : AppCompatActivity() {
             yAxisLineUnit = 1000f
             LABEL = "걸음수"
         } else if(type == "drink"){
-            binding.staticsTitle.text = "음수량 통계"
+            binding.staticsTitle.text = "물 섭취량 통계"
             binding.meanUnit.text = "mL"
             binding.yAxisUnit.text = "mL"
             yAxisLineUnit = 200f
             LABEL = "음수량"
         } else if(type == "communication"){
-            binding.staticsTitle.text = "타 기기와 통신 통계"
+            binding.staticsTitle.text = "친구 만나기 통계"
             binding.meanUnit.text = "회"
             binding.yAxisUnit.text = "회"
             yAxisLineUnit = 2f
